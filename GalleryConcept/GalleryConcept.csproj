@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PrintNode\printnode-net.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="IronPdf, Version=2022.4.0.5455, Culture=neutral, PublicKeyToken=94e1c31412563c75">
+      <HintPath>IronPdf.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IronPdf" Version="2022.4.5455" />
+    <PackageReference Include="IronPdf.Native.Chrome.Windows" Version="2022.4.5445" />
+    <PackageReference Include="itext7" Version="7.2.2" />
+    <PackageReference Include="itext7.pdfhtml" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\img" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\img\1.jpeg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\1.jpeg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\dist\jquery.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\dist\jquery.min.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\dist\jquery.min.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\LICENSE.txt" />
+  </ItemGroup>
+
+</Project>

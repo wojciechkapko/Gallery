@@ -1,0 +1,10 @@
+﻿@model GalleryConcept.Models.TestViewModel
+@{
+    ViewData["Title"] = "Test";
+}
+<h1>@ViewData["Title"]</h1>
+<p>Text: @Model.Name</p>
+
+<img alt="Embedded Image" src="data:image/png;base64,@Model.Image" width="120" height="90" />
+
+<p>Text: @Model.Name</p>
