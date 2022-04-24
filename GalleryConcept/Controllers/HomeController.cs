@@ -4,7 +4,8 @@ using PrintNodeNet;
 using System.Diagnostics;
 using GalleryConcept.Helpers;
 using iText.Html2pdf;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using iText.Layout.Element;
+using Newtonsoft.Json;
 
 namespace GalleryConcept.Controllers
 {
@@ -12,13 +13,37 @@ namespace GalleryConcept.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IViewRender _viewRender;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IConfiguration _configuration;
+
+        private List<Exhibit> Exhibits = new List<Exhibit>
+        {
+            new Exhibit
+            {
+                Id = 1,
+                Name = "ex1",
+            },
+            new Exhibit
+            {
+                Id = 2,
+                Name = "ex2"
+            },
+            new Exhibit
+            {
+                Id = 3,
+                Name = "ex3"
+            },
+            new Exhibit
+            {
+                Id = 4,
+                Name = "ex4"
+            }
+        };
 
         public HomeController(
             ILogger<HomeController> logger,
             IViewRender viewRender,
-            IHostingEnvironment hostingEnvironment,
+            IWebHostEnvironment hostingEnvironment,
             IConfiguration configuration)
         {
             _logger = logger;
@@ -30,7 +55,35 @@ namespace GalleryConcept.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var exhibitId = string.Empty;
+            if (Request.Query.Any())
+            {
+                exhibitId = Request.Query?.First().Value;  
+            }
+
+            
+            var chosenExhibits = new List<string>();
+            if (Request.Cookies["chosenExhibits"] is not null)
+            {
+                chosenExhibits = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
+            }
+
+            if (string.IsNullOrWhiteSpace(exhibitId) == false)
+            {
+                chosenExhibits.Add(exhibitId);
+            }
+                
+                
+            CookieOptions options = new CookieOptions();
+            options.Expires = DateTime.Now.AddHours(6);
+            Response.Cookies.Append("chosenExhibits", JsonConvert.SerializeObject(chosenExhibits), options);
+            
+            Exhibits.Where(x=>chosenExhibits.Contains(x.Id.ToString())).ToList().ForEach(x=>x.IsSelected = true);
+            var model = new HomeViewModel
+            {
+                Exhibits = Exhibits
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()
@@ -40,21 +93,36 @@ namespace GalleryConcept.Controllers
         
         public IActionResult Test()
         {
-            var path = Path.Combine(_hostingEnvironment.WebRootPath, "img", "1.jpeg");
-            byte[] imageArray = System.IO.File.ReadAllBytes(path);
-            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+            if (Request.Cookies["chosenExhibits"] is null)
+            {
+                return BadRequest();
+            }
+            
+            var exhibitsFromCookies = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
+            var chosenExhibitsToPrint = Exhibits.Where(x => exhibitsFromCookies.Contains(x.Id.ToString())).ToList();
+
+            foreach (var exhibit in chosenExhibitsToPrint)
+            {
+                var path = Path.Combine(_hostingEnvironment.WebRootPath, "img", $"{exhibit.Id}.jpg");
+                byte[] imageArray = System.IO.File.ReadAllBytes(path);
+                exhibit.Base64Image = Convert.ToBase64String(imageArray);
+            }
             
             var model = new TestViewModel
             {
-                Name = "test name",
-                Image = base64ImageRepresentation
+                Exhibits = chosenExhibitsToPrint
             };
             
             return View(model);
         }
-        [HttpGet("print/{url}")]
+        [HttpGet("print")]
         public async Task<IActionResult> Print(string url)
         {
+            if (Request.Cookies["chosenExhibits"] is null)
+            {
+                return BadRequest();
+            }
+            
             PrintNodeConfiguration.ApiKey = _configuration["Apikey"];
             var printer = await PrintNodePrinter.GetAsync(Convert.ToInt64(_configuration["PrinterId"]));
             var printJob = new PrintNodePrintJob
@@ -71,15 +139,19 @@ namespace GalleryConcept.Controllers
 
         public byte[] ExportToPDF(string viewName)
         {
-            //Task<byte[]> 
-            var path = Path.Combine(_hostingEnvironment.WebRootPath, "img", "1.jpeg");
-            byte[] imageArray = System.IO.File.ReadAllBytes(path);
-            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+            var exhibitsFromCookies = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
+            var chosenExhibitsToPrint = Exhibits.Where(x => exhibitsFromCookies.Contains(x.Id.ToString())).ToList();
+
+            foreach (var exhibit in chosenExhibitsToPrint)
+            {
+                var path = Path.Combine(_hostingEnvironment.WebRootPath, "img", $"{exhibit.Id}.jpg");
+                byte[] imageArray = System.IO.File.ReadAllBytes(path);
+                exhibit.Base64Image = Convert.ToBase64String(imageArray);
+            }
             
             var model = new TestViewModel
             {
-                Name = "test name",
-                Image = base64ImageRepresentation
+                Exhibits = chosenExhibitsToPrint
             };
             var bodyTxt = _viewRender.RenderPartialViewToString(viewName, model);
 

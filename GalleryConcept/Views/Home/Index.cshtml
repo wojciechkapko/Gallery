@@ -1,8 +1,19 @@
-﻿@{
+﻿@model GalleryConcept.Models.HomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+<div class="container">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="row">
+        @foreach (var exhibit in Model.Exhibits)
+        {
+            <div class="card @(exhibit.IsSelected ? "border border-warning" : "")" style="width: 18rem;">
+                <img src="~/img/@(exhibit.Id).jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        }
+    </div>
 </div>

@@ -1,6 +1,6 @@
 ﻿namespace GalleryConcept.Models;
 
-public class TestViewModel
+public class HomeViewModel
 {
     public List<Exhibit> Exhibits { get; set; }
 }

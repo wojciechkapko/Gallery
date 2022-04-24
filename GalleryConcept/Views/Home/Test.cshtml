@@ -2,9 +2,34 @@
 @{
     ViewData["Title"] = "Test";
 }
-<h1>@ViewData["Title"]</h1>
-<p>Text: @Model.Name</p>
+<h1>Chosen exhibits</h1>
+<div>
+    @foreach (var exhibit in Model.Exhibits)
+    {
+        <div class="card" style="width: 18rem;">
+            <img src="data:image/png;base64,@exhibit.Base64Image" alt="..." style="width: 100%">
+            <div>
+                <p>@exhibit.Name</p>
+            </div>
+        </div>
+    }
+</div>
 
-<img alt="Embedded Image" src="data:image/png;base64,@Model.Image" width="120" height="90" />
-
-<p>Text: @Model.Name</p>
+<style>
+    h1{
+        font-weight: 300;
+        line-height: 1.2;
+        font-size: 3.5rem;
+    }
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: 0.25rem;
+    }
+</style>

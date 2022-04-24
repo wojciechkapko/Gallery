@@ -21,6 +21,9 @@
     <PackageReference Include="IronPdf.Native.Chrome.Windows" Version="2022.4.5445" />
     <PackageReference Include="itext7" Version="7.2.2" />
     <PackageReference Include="itext7.pdfhtml" Version="4.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,9 +32,6 @@
 
   <ItemGroup>
     <Content Update="wwwroot\img\1.jpeg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\1.jpeg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
