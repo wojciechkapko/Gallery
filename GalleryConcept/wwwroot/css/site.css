@@ -1,5 +1,17 @@
 html {
-  font-size: 14px;
+  font-size: 16px;
+}
+
+body{
+  font-family: proxima-nova, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+
+button, input, optgroup, select, textarea {
+  font-family: proxima-nova, sans-serif;
+  font-style: normal;
+  font-weight: 400;
 }
 
 @media (min-width: 768px) {
@@ -15,4 +27,65 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+.accordion-button:not(.collapsed) {
+  font-weight: 700;
+  background-color: white;
+  box-shadow: none;
+  color: #212529;
+}
+
+.accordion-button {
+  font-size: 1.40rem;
+  outline: none;
+  padding: 1rem 0!important;
+  color: #000000;
+}
+.accordion-item:not(:first-of-type) {
+  border-top: 3px solid #000000;
+}
+.accordion-item {
+  border: none;
+  border-top: 3px solid #000000;
+}
+
+.accordion-item:first-of-type {
+  border-radius: 0;
+  border: 0;
+}
+.accordion-body {
+  padding: 0 1.25rem 1.25rem 1.25rem;
+}
+
+.accordion-button:focus {
+  border-color: transparent;
+  box-shadow: none;
+}
+.accordion-button::after {
+  background-image: url(../icons/arrow-up.svg);
+  background-position: center;
+}
+
+.accordion-button:not(.collapsed)::after {
+  background-image: url(../icons/arrow-up.svg);
+  background-position: center;
+  transform: rotate(-180deg);
+}
+
+.accordion-header span{
+    max-width: 13rem;
+}
+
+.btn{
+  background-color: transparent;
+  border: none;
+  color: #000000;
+  font-weight: 700;
+  padding: 1rem 0!important;
+  font-size: 1.4rem;
+}
+
+h1{
+  font-weight: 700;
 }
