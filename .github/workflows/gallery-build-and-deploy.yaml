@@ -16,12 +16,19 @@ jobs:
       - name: Restore packages
         run: dotnet restore
       - name: Create Production Build
-        run: dotnet publish -c Debug --no-restore
+        run: dotnet publish -c Release --no-restore
+      - name: Inject Secrets
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: './GalleryConcept/bin/Release/net6.0/publish/appsettings.json'
+        env:
+          Apikey: ${{ secrets.PRINTER_API_KEY }}
+          PrinterId: ${{ secrets.PRINTER_ID }}
       - name: Push to Linode Cloud
         run: |
           echo "$ssh_key" > ~/ssh_key
           chmod 600 ~/ssh_key
-          rsync -e "ssh -i ~/ssh_key -o StrictHostKeyChecking=no" -avzr ./GalleryConcept/bin/Debug/net6.0/publish/* "$user"@"$target_ip":/var/gallery/app
+          rsync -e "ssh -i ~/ssh_key -o StrictHostKeyChecking=no" -avzr ./GalleryConcept/bin/Release/net6.0/publish/* "$user"@"$target_ip":/var/gallery/app
           ssh -i ~/ssh_key "$user"@"$target_ip" 'supervisorctl stop dotnet'
           ssh -i ~/ssh_key "$user"@"$target_ip" 'supervisorctl start dotnet'
         env:
