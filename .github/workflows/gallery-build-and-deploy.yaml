@@ -21,7 +21,7 @@ jobs:
         run: |
           echo "$ssh_key" > ~/ssh_key
           chmod 600 ~/ssh_key
-          rsync -e "ssh -i ~/ssh_key -o StrictHostKeyChecking=no" -avzr ./GalleryConcept/bin/Release/net6.0/publish/* "$user"@"$target_ip":/var/gallery/app
+          rsync -e "ssh -i ~/ssh_key -o StrictHostKeyChecking=no" -avzr ./GalleryConcept/bin/Debug/net6.0/publish/* "$user"@"$target_ip":/var/gallery/app
           ssh -i ~/ssh_key "$user"@"$target_ip" 'supervisorctl stop dotnet'
           ssh -i ~/ssh_key "$user"@"$target_ip" 'supervisorctl start dotnet'
         env:
