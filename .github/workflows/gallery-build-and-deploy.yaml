@@ -28,3 +28,6 @@ jobs:
           target_ip: ${{secrets.LINODE_IP}}
       - name: Run Site
         run: ssh "$user"@"$target_ip" 'cd /var/gallery/app | dotnet run'
+        env:
+          user: ${{secrets.GHUB_ACTIONS_USER}}
+          target_ip: ${{secrets.LINODE_IP}}
