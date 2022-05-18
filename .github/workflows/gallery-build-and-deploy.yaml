@@ -26,3 +26,7 @@ jobs:
           ssh_key: ${{secrets.GHUB_ACTIONS_SSH}}
           user: ${{secrets.GHUB_ACTIONS_USER}}
           target_ip: ${{secrets.LINODE_IP}}
+      - name: Change Directory
+        run: cd /var/gallery/app
+      - name: Run Site
+        run: dotnet run
