@@ -10,4 +10,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2.4.2
     - name: Check Dotnet CLI
-      run: dotnet
+      run: dotnet build
+    - name: list stuff
+      run: ls GalleryConcept/ -R
