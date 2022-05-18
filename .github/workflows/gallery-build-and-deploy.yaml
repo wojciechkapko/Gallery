@@ -17,4 +17,12 @@ jobs:
         run: dotnet restore
       - name: Create Production Build
         run: dotnet publish -c Release --no-restore
-
+      - name: Push to Linode Cloud
+        run: |
+          echo "$ssh_key" > ~/ssh_key
+          chmod 600 ~/ssh_key
+          rsync -e "ssh -i ~/ssh_key -o StrictHostKeyChecking=no" -avzr ./GalleryConcept/bin/Release/net6.0/publish/* "$user"@"$target_ip":/var/gallery/app
+        env:
+          ssh_key: ${{secrets.GHUB_ACTIONS_SSH}}
+          user: ${{secrets.GHUB_ACTIONS_USER}}
+          target_ip: ${{secrets.LINODE_IP}}
