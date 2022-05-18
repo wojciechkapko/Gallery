@@ -22,7 +22,7 @@ jobs:
           echo "$ssh_key" > ~/ssh_key
           chmod 600 ~/ssh_key
           rsync -e "ssh -i ~/ssh_key -o StrictHostKeyChecking=no" -avzr ./GalleryConcept/bin/Release/net6.0/publish/* "$user"@"$target_ip":/var/gallery/app
-          ssh -i ~/ssh_key "$user"@"$target_ip" 'kill $(ps aux | grep 'GalleryConcept.dll')'
+          ssh -i ~/ssh_key "$user"@"$target_ip" 'kill $(ps aux | grep 'GalleryConcept.dll' | awk '{print $2}')'
           ssh -i ~/ssh_key "$user"@"$target_ip" 'nohup dotnet /var/gallery/app/GalleryConcept.dll &'
         env:
           ssh_key: ${{secrets.GHUB_ACTIONS_SSH}}
