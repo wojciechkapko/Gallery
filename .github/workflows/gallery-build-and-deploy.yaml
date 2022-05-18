@@ -16,7 +16,7 @@ jobs:
       - name: Restore packages
         run: dotnet restore
       - name: Create Production Build
-        run: dotnet publish -c Release --no-restore
+        run: dotnet publish -c Debug --no-restore
       - name: Push to Linode Cloud
         run: |
           echo "$ssh_key" > ~/ssh_key
