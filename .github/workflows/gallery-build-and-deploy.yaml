@@ -1,0 +1,13 @@
+﻿name: Gallery Buil and Deploy
+  
+on: push
+
+jobs:
+  build:
+    name: Build our App
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.4.2
+    - name: Check Dotnet CLI
+      run: dotnet
