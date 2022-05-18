@@ -7,9 +7,14 @@ jobs:
     name: Build our App
     runs-on: ubuntu-20.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2.4.2
-    - name: Check Dotnet CLI
-      run: dotnet build
-    - name: list stuff
-      run: ls GalleryConcept/ -R
+      - name: Checkout
+        uses: actions/checkout@v2.4.2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2.1.0
+        with:
+          dotnet-version: '6.0.300'
+      - name: Restore packages
+        run: dotnet restore
+      - name: Create Production Build
+        run: dotnet publish -c Release --no-restore
+
