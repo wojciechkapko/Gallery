@@ -335,7 +335,6 @@ namespace GalleryConcept.Controllers
         }
         
         [HttpPost("Send")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Send(IFormCollection data, string? id)
         {
             if (!ModelState.IsValid)
