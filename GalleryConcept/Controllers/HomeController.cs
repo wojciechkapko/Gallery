@@ -197,29 +197,41 @@ namespace GalleryConcept.Controllers
             {
                 return BadRequest();
             }
-            
-            PrintNodeConfiguration.ApiKey = _configuration["Apikey"];
-            var printer = await PrintNodePrinter.GetAsync(Convert.ToInt64(_configuration["PrinterId"]));
-            
-            var exhibitsFromCookies = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
-            var chosenExhibitsToPrint = Exhibits.Where(x => exhibitsFromCookies.Contains(x.Id.ToString())).ToList();
-            
-            foreach (var exhibit in chosenExhibitsToPrint)
+
+            try
             {
-                var path = Path.Combine(_hostingEnvironment.WebRootPath, "documents", $"{exhibit.Id}.pdf");
-                var pdfDocument = System.IO.File.ReadAllBytes(path);
-                
-                var printJob = new PrintNodePrintJob
+                PrintNodeConfiguration.ApiKey = _configuration["Apikey"];
+                var printer = await PrintNodePrinter.GetAsync(Convert.ToInt64(_configuration["PrinterId"]));
+            
+                var exhibitsFromCookies = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
+                var chosenExhibitsToPrint = Exhibits.Where(x => exhibitsFromCookies.Contains(x.Id.ToString())).ToList();
+            
+                foreach (var exhibit in chosenExhibitsToPrint)
                 {
-                    Title = exhibit.Name,
-                    Content = Convert.ToBase64String(pdfDocument),
-                    ContentType = "pdf_base64"
-                };
+                    var path = Path.Combine(_hostingEnvironment.WebRootPath, "documents", $"{exhibit.Id}.pdf");
+                    var pdfDocument = System.IO.File.ReadAllBytes(path);
+                
+                    var printJob = new PrintNodePrintJob
+                    {
+                        Title = exhibit.Name,
+                        Content = Convert.ToBase64String(pdfDocument),
+                        ContentType = "pdf_base64"
+                    };
             
-                await printer.AddPrintJob(printJob);
+                    await printer.AddPrintJob(printJob);
+                }
+            
+                return View();
             }
-            
-            return View();
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                _logger.LogInformation(e.StackTrace);
+                
+                _logger.LogInformation(PrintNodeConfiguration.ApiKey);
+                _logger.LogInformation(_configuration["PrinterId"]);
+            }
+            return BadRequest();
         }
 
         [HttpGet("email")]
@@ -229,22 +241,13 @@ namespace GalleryConcept.Controllers
             {
                 return BadRequest();
             }
-            
-            PrintNodeConfiguration.ApiKey = _configuration["Apikey"];
-            var printer = await PrintNodePrinter.GetAsync(Convert.ToInt64(_configuration["PrinterId"]));
-            
-            var exhibitsFromCookies = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
-            var chosenExhibitsToPrint = Exhibits.Where(x => exhibitsFromCookies.Contains(x.Id.ToString())).ToList();
 
-
-            var sender = new SmtpSender(() => new SmtpClient("smtp.gmail.com")
+            try
             {
-                UseDefaultCredentials = false,
-                Port = 587,
-                Credentials = new NetworkCredential("twoj-ekatalog@cotozakolor.pl", _configuration["MailPass"]),
-                EnableSsl = true,
-            });
-            // var emailToUse = MailboxAddress.Parse(userEmail);
+                var exhibitsFromCookies = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
+                var chosenExhibitsToPrint = Exhibits.Where(x => exhibitsFromCookies.Contains(x.Id.ToString())).ToList();
+                
+                // var emailToUse = MailboxAddress.Parse(userEmail);
             // var ourEmail = MailboxAddress.Parse("twoj-ekatalog@cotozakolor.pl");
             // using var smtp = new SmtpClient();
             // await smtp.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
@@ -267,6 +270,14 @@ namespace GalleryConcept.Controllers
             //     EnableSsl = true
             // });
             
+            var sender = new SmtpSender(() => new SmtpClient("smtp.gmail.com")
+            {
+                UseDefaultCredentials = false,
+                Port = 587,
+                Credentials = new NetworkCredential("twoj-ekatalog@cotozakolor.pl", _configuration["MailPass"]),
+                EnableSsl = true,
+            });
+            
             Email.DefaultSender = sender;
             
             var email = Email.From("twoj-ekatalog@cotozakolor.pl")
@@ -283,6 +294,16 @@ namespace GalleryConcept.Controllers
             
             await email.SendAsync();
             return View();
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                _logger.LogInformation(e.StackTrace);
+                
+                _logger.LogInformation(_configuration["MailPass"]);
+            }
+            
+            return BadRequest();
         }
 
         public byte[] ExportToPDF(string viewName, int id)
