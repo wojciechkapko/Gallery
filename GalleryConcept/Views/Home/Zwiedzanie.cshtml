@@ -31,7 +31,7 @@
                                     <h3 class="mb-2">@(audioFile)</h3>
                                     <audio class="mb-2" controls>
                                         <source src="~/audio/@(audioFile).mp3" type="audio/mp3">
-                                        @* <source src="viper.ogg" type="audio/ogg"> *@
+                                        <source src="~/audio/@(audioFile).ogg" type="audio/ogg">
                                         <p>Your browser doesn't support HTML5 audio. Here is a <a href="viper.mp3">link to the audio</a> instead.</p>
                                     </audio> 
                                 }
