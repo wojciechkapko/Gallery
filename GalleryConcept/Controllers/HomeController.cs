@@ -225,6 +225,7 @@ namespace GalleryConcept.Controllers
         [HttpGet("email")]
         public async Task<IActionResult> SendEmail(string userEmail)
         {
+            return Ok(_configuration["MailPass"].ToString());
             if (Request.Cookies["chosenExhibits"] is null)
             {
                 return BadRequest();
