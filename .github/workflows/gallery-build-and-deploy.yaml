@@ -24,6 +24,7 @@ jobs:
         env:
           Apikey: ${{ secrets.PRINTER_API_KEY }}
           PrinterId: ${{ secrets.PRINTER_ID }}
+          MailPass: ${{ secrets.MAIL }}
       - name: Push to Linode Cloud
         run: |
           echo "$ssh_key" > ~/ssh_key

@@ -14,12 +14,11 @@
                     <h2 class="accordion-header d-flex align-items-center" id=@($"heading{exhibit.Id}")>
                         <button id=@($"item{exhibit.Id}") class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target=@($"#collapse{exhibit.Id}") aria-expanded="true" aria-controls="collapseOne">
                             <span>@exhibit.Name</span>
-
                         </button>
-                        <input id=@($"checkbox-{exhibit.Id}") class="form-check-input ms-4 me-0 mt-0" type="checkbox" value="" @(exhibit.IsSelected ? "checked" : "") onchange="toggleExhibit(this, @(exhibit.Id))" aria-label="Checkbox for following text input">
+                        <a class="btn btn-dark btn2 px-3 py-2 ms-4 @(exhibit.IsSelected ? "selected" : "")" tabindex="-1" role="button" aria-disabled="true" onclick="toggleExhibit(this, @(exhibit.Id))">@(exhibit.IsSelected ? "Usuń" : "Dodaj")</a>
                     </h2>
                     <div id=@($"collapse{exhibit.Id}") class="accordion-collapse collapse" aria-labelledby=@($"heading{exhibit.Id}") data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
+                        <div class="accordion-body p-0 pb-3">
                             @exhibit.Description
                         </div>
                     </div>
@@ -28,10 +27,20 @@
         </div>
     </div>
 </div>
+<form asp-antiforgery="true" asp-action="Send" asp-controller="Home" class="row justify-content-center align-content-center mt-5">
+    <div class="col-auto">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" name="email" class="form-control" id="email">
+  </div>
+  <div class="col-auto d-flex align-items-end">
+    <button type="submit" class="btn btn2 btn-dark">Wyślij</button>
+  </div>
+</form>
+
 
 @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-    
     function toggleExhibit(sender, id){
         let cookieValue = document.cookie
                   .split('; ')
@@ -39,13 +48,17 @@
                   .split('=')[1];
         let data = JSON.parse(unescape(cookieValue));
                 
-        if(!sender.checked){
+        if(sender.classList.contains('selected')){
             let index = data.indexOf(id.toString());
             if (index > -1) {
               data.splice(index, 1);
             }
+            sender.classList.remove('selected');
+            sender.textContent = 'Dodaj';
         }else{
             data.push(id.toString());
+            sender.classList.add('selected');
+            sender.textContent = 'Usuń';
         }
         
         
@@ -56,6 +69,24 @@
     }
     
 $(document).ready(function() {
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+    
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+    
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+        return false;
+    };
+
+    
+    
     @foreach (var exhibit in Model.Exhibits)
     {
         <text>
@@ -76,6 +107,10 @@ $(document).ready(function() {
                                 });
         </text>
     }
+    
+        let chosenId = getUrlParameter('id');
+        let element =  $("#item" + chosenId);
+        element.click();
     });
   </script>
 }

@@ -54,9 +54,6 @@ body {
   border-radius: 0;
   border: 0;
 }
-.accordion-body {
-  padding: 0 1.25rem 1.25rem 1.25rem;
-}
 
 .accordion-button:focus {
   border-color: transparent;
@@ -74,7 +71,7 @@ body {
 }
 
 .accordion-header span{
-    max-width: 13rem;
+    max-width: 12.5rem;
 }
 
 .btn{
@@ -82,9 +79,18 @@ body {
   border: none;
   color: #000000;
   font-weight: 700;
-  padding: 1rem 0!important;
+  padding: 1rem 0;
   font-size: 1.4rem;
 }
+
+.btn2{
+  background-color: transparent;
+  border: 2px solid #000000;
+  padding: 0.15rem 0.75rem;
+  font-size: 1.2rem;
+}
+
+
 
 h1{
   font-weight: 700;
