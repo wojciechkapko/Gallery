@@ -85,6 +85,17 @@ namespace GalleryConcept.Controllers
                                 Przełom nastąpił dopiero w 1905 roku, kiedy to magenta zaczęła pojawiać się częściej wśród artystów reprezentujących nowy nurt sztuki zwanym fowizmem. Nurt ten charakteryzował się bardzo bogatą i niestandardową kolorystyką. Artyści w kręgach tego nurtu nie stworzyli manifestu ani programu. Chcieli za to całkowitej swobody i zerwania z naśladowaniem natury. Fowiści czerpali inspiracje z dzieł Van Gogha, Gauguina i innych impresjonistów. Najczęściej tworzyli pejzaże przy użyciu płaskich plam i nierealistycznych kolorów. Najbardziej znanym przedstawicielem tej grupy był Henri Matisse. W tym przypadku łatwo wyjaśnić dlaczego malarze sięgali po magentę. Jeśli ktoś chciał znaleźć kolor, który w dobie rewolucji przemysłowej był przeciwieństwem natury, nie musiał szukać daleko.
                                 "
             },
+            new Exhibit
+            {
+                Id = 7,
+                Name = "Odsłuchaj w różnych językach",
+                Description = @"Oto TOP 10 najpopularniejszych języków na świecie. Przesłuchaj jak w każdym z nich brzmi nazwa magenty",
+                HasAudio = true,
+                AudioFiles = new List<string>
+                {
+                    "Angielski", "Arabski", "Bengalski", "Francuski", "Hindi", "Hiszpański", "Indonezyjski", "Mandarynski", "Portugalski", "Rosyjski"
+                }
+            }
         };
 
         public HomeController(
@@ -206,6 +217,19 @@ namespace GalleryConcept.Controllers
                 var exhibitsFromCookies = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
                 var chosenExhibitsToPrint = Exhibits.Where(x => exhibitsFromCookies.Contains(x.Id.ToString())).ToList();
             
+                var infoPath = Path.Combine(_hostingEnvironment.WebRootPath, "documents", $"wystawa.pdf");
+                var infoPdfDocument = System.IO.File.ReadAllBytes(infoPath);
+                
+                var infoPrintJob = new PrintNodePrintJob
+                {
+                    Title = "Informacje o wystawie",
+                    Content = Convert.ToBase64String(infoPdfDocument),
+                    ContentType = "pdf_base64"
+                };
+            
+                await printer.AddPrintJob(infoPrintJob);
+                
+                
                 foreach (var exhibit in chosenExhibitsToPrint)
                 {
                     var path = Path.Combine(_hostingEnvironment.WebRootPath, "documents", $"{exhibit.Id}.pdf");

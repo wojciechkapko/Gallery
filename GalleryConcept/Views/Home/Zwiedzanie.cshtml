@@ -15,11 +15,28 @@
                         <button id=@($"item{exhibit.Id}") class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target=@($"#collapse{exhibit.Id}") aria-expanded="true" aria-controls="collapseOne">
                             <span>@exhibit.Name</span>
                         </button>
-                        <a class="btn btn-dark btn2 px-3 py-2 ms-4 @(exhibit.IsSelected ? "selected" : "")" tabindex="-1" role="button" aria-disabled="true" onclick="toggleExhibit(this, @(exhibit.Id))">@(exhibit.IsSelected ? "Usuń" : "Dodaj")</a>
+                        @if (exhibit.HasAudio == false)
+                        {
+                            <a class="btn btn-dark btn2 px-3 py-2 ms-4 @(exhibit.IsSelected ? "selected" : "")" tabindex="-1" role="button" aria-disabled="true" onclick="toggleExhibit(this, @(exhibit.Id))">@(exhibit.IsSelected ? "Usuń" : "Dodaj")</a>
+                        }
                     </h2>
                     <div id=@($"collapse{exhibit.Id}") class="accordion-collapse collapse" aria-labelledby=@($"heading{exhibit.Id}") data-bs-parent="#accordionExample">
                         <div class="accordion-body p-0 pb-3">
                             @exhibit.Description
+                            @if (exhibit.HasAudio)
+                            {
+                                <div class="row mt-3">
+                                @foreach (var audioFile in exhibit.AudioFiles)
+                                {
+                                    <h3 class="mb-2">@(audioFile)</h3>
+                                    <audio class="mb-2" controls>
+                                        <source src="~/audio/@(audioFile).mp3" type="audio/mp3">
+                                        @* <source src="viper.ogg" type="audio/ogg"> *@
+                                        <p>Your browser doesn't support HTML5 audio. Here is a <a href="viper.mp3">link to the audio</a> instead.</p>
+                                    </audio> 
+                                }
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>

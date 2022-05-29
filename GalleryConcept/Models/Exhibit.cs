@@ -7,4 +7,6 @@ public class Exhibit
     public bool IsSelected { get; set; }
     public string Base64Image { get; set; }
     public string Description { get; set; }
+    public bool HasAudio { get; set; }
+    public List<string> AudioFiles { get; set; }
 }
