@@ -48,12 +48,21 @@
     <div class="col-auto">
         <label for="email" class="form-label">Email</label>
         <input type="email" name="email" class="form-control" id="email">
-  </div>
-  <div class="col-auto d-flex align-items-end">
-    <button type="submit" class="btn btn2 btn-dark">Wyślij</button>
-  </div>
+    </div>
+    <div class="col-auto d-flex align-items-end">
+        <button type="submit" class="btn btn2 btn-dark">Wyślij</button>
+    </div>
 </form>
-
+@if (Model.ValidationError)
+{
+    <div class="row justify-content-center align-content-center">
+        <div class="col-auto text-center mt-2">
+            <div class="invalid-feedback d-block">
+                        Błąd - Brak adresu email lub brak wybranych eksponatów.
+            </div>
+        </div>
+    </div>
+}
 
 @section Scripts {
         @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

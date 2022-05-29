@@ -136,7 +136,7 @@ namespace GalleryConcept.Controllers
         }
 
         [HttpGet("zwiedzanie")]
-        public IActionResult Zwiedzanie()
+        public IActionResult Zwiedzanie(bool validationError = false)
         {
             // var exhibitId = string.Empty;
             // if (Request.Query.Any())
@@ -170,7 +170,8 @@ namespace GalleryConcept.Controllers
             
             var model = new ZwiedzanieViewModel
             {
-                Exhibits = Exhibits
+                Exhibits = Exhibits,
+                ValidationError = validationError
             };
 
 
@@ -361,11 +362,26 @@ namespace GalleryConcept.Controllers
         [HttpPost("Send")]
         public async Task<IActionResult> Send(IFormCollection data, string? id)
         {
-            if (!ModelState.IsValid)
+            var isValid = true;
+            try
             {
-                return Ok();
+                var exhibitsFromCookies = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
+                if (Request.Cookies["chosenExhibits"] == null || exhibitsFromCookies.Any() == false || data.ContainsKey("email") == false || string.IsNullOrWhiteSpace(data["email"].ToString()))
+                {
+                    isValid = false;
+                }
+            }
+            catch (Exception e)
+            {
+                isValid = false;
             }
 
+            if (isValid == false)
+            {
+                return RedirectToAction(nameof(Zwiedzanie), new { validationError = true });
+            }
+            
+            
             return RedirectToAction(nameof(SendEmail), new { userEmail = data["email"] });
         }
 
