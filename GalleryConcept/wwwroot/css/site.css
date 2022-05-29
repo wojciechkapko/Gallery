@@ -60,19 +60,27 @@ body {
   box-shadow: none;
 }
 .accordion-button::after {
-  background-image: url(../icons/arrow-up.svg);
+  background-image: url(../icons/arrow-down.svg);
   background-position: center;
 }
 
 .accordion-button:not(.collapsed)::after {
-  background-image: url(../icons/arrow-up.svg);
+  background-image: url(../icons/arrow-down.svg);
   background-position: center;
   transform: rotate(-180deg);
 }
 
 .accordion-header span{
-    max-width: 12.5rem;
+  max-width: 10.5rem;
 }
+
+@media (min-width: 390px){
+  .accordion-header span{
+    max-width: 12.5rem;
+  }
+}
+
+
 
 .btn{
   background-color: transparent;
