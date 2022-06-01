@@ -98,11 +98,12 @@ body {
   padding: 0.15rem 0.75rem;
   font-size: 1.2rem;
   min-width: 5.3rem;
+  box-shadow:none!important;
 }
 
 .btn2:active, .btn2:focus {
-  background-color: #ffffff!important;
-  color: #000000!important;
+  background-color: #ffffff;
+  color: #000000;
 }
 
 .btn2.selected {
