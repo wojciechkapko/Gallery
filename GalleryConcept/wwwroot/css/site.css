@@ -100,6 +100,11 @@ body {
   min-width: 5.3rem;
 }
 
+.btn2:active, .btn2:focus {
+  background-color: #ffffff!important;
+  color: #000000!important;
+}
+
 .btn2.selected {
   background-color: #000000;
   color: #ffffff;
