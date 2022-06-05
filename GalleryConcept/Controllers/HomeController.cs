@@ -205,18 +205,12 @@ namespace GalleryConcept.Controllers
         [HttpGet("print")]
         public async Task<IActionResult> Print(string url)
         {
-            if (Request.Cookies["chosenExhibits"] is null)
-            {
-                return BadRequest();
-            }
-
             try
             {
                 PrintNodeConfiguration.ApiKey = _configuration["Apikey"];
                 var printer = await PrintNodePrinter.GetAsync(Convert.ToInt64(_configuration["PrinterId"]));
             
-                var exhibitsFromCookies = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
-                var chosenExhibitsToPrint = Exhibits.Where(x => exhibitsFromCookies.Contains(x.Id.ToString())).ToList();
+                
             
                 var infoPath = Path.Combine(_hostingEnvironment.WebRootPath, "documents", $"wystawa.pdf");
                 var infoPdfDocument = System.IO.File.ReadAllBytes(infoPath);
@@ -229,7 +223,14 @@ namespace GalleryConcept.Controllers
                 };
             
                 await printer.AddPrintJob(infoPrintJob);
+
+                if (Request.Cookies["chosenExhibits"] is null)
+                {
+                    return View();
+                }
                 
+                var exhibitsFromCookies = JsonConvert.DeserializeObject<List<string>>(Request.Cookies["chosenExhibits"]);
+                var chosenExhibitsToPrint = Exhibits.Where(x => exhibitsFromCookies.Contains(x.Id.ToString())).ToList();
                 
                 foreach (var exhibit in chosenExhibitsToPrint)
                 {
